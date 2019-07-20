@@ -1,0 +1,191 @@
+<html>
+
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- jquery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+  <style type="text/css">
+
+  body{
+  		color:white;
+  		background-color: black;
+  		font-size: 20px;
+
+  	}
+
+  	* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+ 
+ #text{
+  	padding-left: 100px;  
+	background-color: black;
+	width: 600px;
+	border: 5px solid white;
+	color:white;
+	padding: 50px;
+	margin: 50px 50px 50px 50px;
+	text-align: left;
+}
+
+	#text .li{
+		margin-bottom: 5px;
+	}
+  </style>
+</head>
+
+
+<body>
+
+<div class="row">
+  <div class="column">
+    <div id="graph1"></div>
+	<div id="graph2"></div>
+	<div id="graph3"></div>
+	<div id="graph4"></div>
+  </div>
+  <div class="column">
+  	<div id="text">
+    <ul>
+		<li>X:</li>
+		<li>Y:</li>
+	</ul>
+	</div>
+  </div>
+  <div class="column">
+  	<h1>I am thinking <div class="typewrite" data-period="20" data-type='[ "Forward", "Backward", "Left", "Right" ]'>
+    	<span class="wrap"></span>
+  	</div>
+	</h1>
+  </div>
+</div>
+
+
+
+  <script src="js/plotly.min.js"></script>
+  <script type="text/javascript">
+
+
+  function getData(){
+    return Math.random();
+  }
+
+  var trace1 = { y: [getData()], type: 'scatter', line: {color: 'rgb(219, 64, 82)', width: 2}};
+  var trace2 = { y: [getData()], type: 'scatter',line: {color: 'rgb(142, 124, 195)', width: 2}};
+  var trace3 = { y: [getData()], type: 'scatter',line: {color: 'rgb(34,139,34)', width: 2}};
+  var trace4= { y: [getData()], type: 'scatter',line: {color: 'rgb(255,140,0)', width: 2}};
+
+  var layout = {
+  autosize: true,
+  width:700,
+  height: 250
+};
+
+  var graph1=[trace1];
+  var graph2=[trace2];
+  var graph3=[trace3];
+  var graph4=[trace4];
+
+
+
+  Plotly.newPlot('graph1',graph1, layout);
+  Plotly.plot('graph2', graph2,layout);
+  Plotly.plot('graph3', graph3, layout);
+  Plotly.plot('graph4', graph4,layout);
+
+  var cnt = 0;
+
+  setInterval(function(){
+    Plotly.extendTraces('graph1',{ y:[[getData()]]},[0]);
+    Plotly.extendTraces('graph2',{ y:[[getData()]]},[0]);
+    Plotly.extendTraces('graph3',{ y:[[getData()]]},[0]);
+    Plotly.extendTraces('graph4',{ y:[[getData()]]},[0]);
+    cnt++;
+
+    if(cnt > 30) {+
+     Plotly.relayout('graph1',{xaxis: {range: [cnt-30,cnt]}}); 
+     Plotly.relayout('graph2',{xaxis: {range: [cnt-30,cnt]}});
+     Plotly.relayout('graph3',{xaxis: {range: [cnt-30,cnt]}});  
+     Plotly.relayout('graph4',{xaxis: {range: [cnt-30,cnt]}});
+    }
+  },15);
+
+</script>
+
+<script type="text/javascript">
+	var TxtType = function(el, toRotate, period) {
+        this.toRotate = toRotate;
+        this.el = el;
+        this.loopNum = 0;
+        this.period = parseInt(period, 10) || 2000;
+        this.txt = '';
+        this.tick();
+        this.isDeleting = false;
+    };
+
+    TxtType.prototype.tick = function() {
+        var i = this.loopNum % this.toRotate.length;
+        var fullTxt = this.toRotate[i];
+
+        if (this.isDeleting) {
+        this.txt = fullTxt.substring(0, this.txt.length - 1);
+        } else {
+        this.txt = fullTxt.substring(0, this.txt.length + 1);
+        }
+
+        this.el.innerHTML = '<span class="wrap">'+this.txt+'</span>';
+
+        var that = this;
+        var delta = 200 - Math.random() * 100;
+
+        if (this.isDeleting) { delta /= 2; }
+
+        if (!this.isDeleting && this.txt === fullTxt) {
+        delta = this.period;
+        this.isDeleting = true;
+        } else if (this.isDeleting && this.txt === '') {
+        this.isDeleting = false;
+        this.loopNum++;
+        delta = 500;
+        }
+
+        setTimeout(function() {
+        that.tick();
+        }, delta);
+    };
+
+    window.onload = function() {
+        var elements = document.getElementsByClassName('typewrite');
+        for (var i=0; i<elements.length; i++) {
+            var toRotate = elements[i].getAttribute('data-type');
+            var period = elements[i].getAttribute('data-period');
+            if (toRotate) {
+              new TxtType(elements[i], JSON.parse(toRotate), period);
+            }
+        }
+        // INJECT CSS
+        var css = document.createElement("style");
+        css.type = "text/css";
+        css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
+        document.body.appendChild(css);
+    };
+</script>
+</body>
+
+
+</html>
