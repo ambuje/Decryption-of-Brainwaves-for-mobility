@@ -47,4 +47,4 @@ while True:
       
 df = pd.DataFrame(dfList, columns =['ch1', 'ch2', 'ch3', 'ch4'])
 print(df)
-df.to_csv('R_AG_11_eegdata.csv' ,index=False)
+df.to_csv('L_HK_12_eegdata.csv' ,index=False)
